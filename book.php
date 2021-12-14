@@ -32,7 +32,7 @@ require_once 'C:\xampp\htdocs\Project\includes/function-inc.php';
     <option value="6:00pm-9:00pm">6:00pm-9:00pm</option>
     <option value="9:00pm-12:00pm">9:00pm-12:00pm</option>
    </select>
-    <button type="submit" name="submit">Submit</button>
+    <input type="submit" name="submit" value="Submit">
 </center>
 </form>
 
