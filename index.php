@@ -1,129 +1,71 @@
- <?php
- session_start();
- $user_data = check_login($conn);
-    $_SESSION;
+<?php 
 
-    function build_calendar($month, $year){
-        $daysofweek = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', );
+require_once 'C:\xampp\htdocs\Project\includes/dbh-inc.php';
+require_once 'C:\xampp\htdocs\Project\includes/function-inc.php';
 
-        $firstdayofmonth = mktime(0,0,0,$month,1,$year);
+check_login($conn);
+//doihavetime($conn);
 
-        $numofdays = date('t', $firstdayofmonth);
 
-        $datecomps = getdate($firstdayofmonth);
 
-        $monthname = $datecomps['month'];
 
-        $daysofweek = $datecomps['wday'];
-
-        $datetoday = date('Y-m-d');
-
-        $calendar = "<table class='table table-bordered'>";
-        $calendar.="<center><h2>$monthname $year</h2></center>";
-        $calendar.= "<a class = 'btn btn-xs btn-primary' href=?month=" .date('m')."&year=".date('Y').">Current Month</a>";
-        $calendar.= "<a class = 'btn btn-xs btn-primary' href=?month=" .date('m' ,mktime(0,0,0,$month+1,1,$year))."&year=".date('Y', mktime(0,0,0,$month+1,1,$year)).">Next Month</a></center><br>";
-
-        $calendar.= "<tr>";
-
-        foreach($daysofweek as $day){
-            $calendar.= "<th class='header'>$day</th>";
-        }
-
-        $calendar.= "</tr><tr>";
-
-        if($daysofweek > 0){
-            for($k=0; $k < $daysofweek; $k++){
-                $calendar.= "<td></td>";
-            }
-        }
-
-        $currday = 1;
-
-        $month = str_pad($month, 2 , "0", STR_PAD_LEFT);
-
-        while($currday <= $numofdays){
-
-            if($daysofweek == 7){
-                $daysofweek =0;
-                $calendar.="</tr><tr>";
-            }
-            $currdayrel =  str_pad($month, 2 , "0", STR_PAD_LEFT);
-            $date = "$year-$month-$currdayrel";
-
-            $today = $date ==date('Y-m-d')?"today" :"";
-            if($date<date('Y-m-d')){
-                $calendar.="<td><h4>$currday</h4><button class='btn btn-danger btn-xs'>N/A</button>";
-            }else{
-                $calendar.="<td class='$today'><h4>$currday</h4><a href='book.php?date=".$date."' class='btn btn-danger btn-xs'>Select time slot</a>";
-            }
-
-            if($datetoday == $date){
-                $calendar.= "<td><h4>$currday</h4>";
-            }else{
-                $calendar.= "<td><h4>$currday</h4>";   
-            }
-            $calendar.="</td>";
-
-            $currday++;
-            $daysofweek++;
-        }
-
-        if($daysofweek != 7){
-            $daysleft = 7 - $daysofweek;
-            for($i=0; $i< $daysleft; $i++){
-                $calendar.= "<td></td>";
-            }
-        }
-
-        $calendar.= "</tr>";
-        $calendar.= "</tables>";
-
-        echo $calendar;
-    }
-
-    ?>
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Residents</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Welcome Resident to the Homepage</title>
     <style>
         table{
             table-layout: fixed;
         }
-
+        td{
+             width: 30%;;
+         }
         .today{
             background-color: lightblue;
         }
+        
     </style>
 </head>
 <body>
-<h1>Already picked a timeslot? you can find it below!</h1>
-<h3>Here is your selected time slot</h3>
+    <?php $sql = "SELECT * FROM users;";
+    $results = mysqli_query($conn, $sql);
+    $rescheck = mysqli_num_rows($results);
+    if($rescheck > 0){
+        while($row = mysqli_fetch_assoc($results)){
+            echo $row['time_slot'];
+        }
+    }else{
+        echo "<h4>It seems like you dont have a time slot you can book one below!</h4>";
+    }?>
+    <center><h3>Welcome Resident from Apartment: <?php $sql = "SELECT * FROM users;";$results = mysqli_query($conn, $sql);
+    $rescheck = mysqli_num_rows($results);
+    if($rescheck > 0){
+        while($row = mysqli_fetch_assoc($results)){
+            echo $row['Apartment_num'];
+        }
 
-   Hello <?php echo $user_data['user_name']; ?>
-
-<h1> Welcome please select a time slot </h1>
-<div>
-    <div>
-        <?php
-        $datecomps = getdate();
-        $month = $datecomps['mon'];
-        $year = $datecomps['year'];
-        echo build_calendar($month , $year); 
-
-        ?>
+    }
+    
+    ?></h3></center>
+    <div class="container">
+        <div class="row"> 
+            <div class="col-md-12">
+                <?php 
+                $datecomp = getdate();
+                $month = $datecomp['mon'];
+                $year = $datecomp['year'];
+                echo build_calendar($month, $year);
+                ?>
+            </div>
+        </div>
     </div>
-</div>
-
-<a href="logout.php">Logout</a>
-
-
-<br>
-
-   
+    <a href='logout.php'class='btn btn-danger btn-s'>Logout</a";
+ 
+    
 </body>
 </html>
-

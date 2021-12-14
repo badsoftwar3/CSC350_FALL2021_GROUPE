@@ -1,54 +1,58 @@
 <?php 
-session_start();
 
-include("connect.php");
-include("function.php");
 
-if($_SERVER['REQUEST_METHOD'] == "POST" ){
 
-    $user_name = $_POST['user_name'];
-    $password = $_POST['password'];
 
-    if(!empty($user_name) && ! empty($password) && !is_numeric($user_name)){
 
-        $user_id= random_num(3);
 
-        $query = "insert into users(user_id,user_name,password) values ('$user_id','$user_name','$password')";
 
-        mysqli_query($conn ,$query);
-
-        header("Location: login php");
-        die;
-
-    }else{
-        echo "Erorr User information is invaild";
-    }
-}
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign-Up</title>
+    <title>Welcome Residents to the Sign-up page</title>
 </head>
 <body>
 
-<div>
-    <form action="post">
-        <div id="login-title">Login</div>
-        <input id="box" type="text" name="user_name">
-        <br>
-        <input id="box" type="password" name="password">
-         <br>
-        <input id="SiGNup-submit" type="submit" value="Signup">
-
+<section class="signup_form">
+    <h2>Sign up</h2>
+    <form action="includes/signup-inc.php" method="POST">
+        <input type="text" name="user_name" placeholder="UserName">
+        <input type="password" name="pwd" placeholder="password">
+        <input type="password" name="cpwd" placeholder="repeatpassowrd">
+        <input type="text" name="Apartment_num" placeholder="Enter your  Apartment Number">
+        <button type="submit" name="submit">Sign Up</button>
         <a href="login.php">Have an account? click here to sign in!</a>
     </form>
-</div>
-    
+<?php
+   if(isset($_GET["error"])) {
+       if($_GET["error"] == "emptyinput"){
+           echo "<p>Fill in all fields</p>";
+       }
+       elseif ($_GET["error"] == "invaildusername"){
+           echo "<p>Enter vaild username</p>";
+       }
+       elseif ($_GET["error"] == "passwordnotmatch"){
+        echo "<p>Enter matching passwords</p>";
+       }
+        elseif ($_GET["error"] == "invaildapartmentnumber"){
+            echo "<p>Enter vaild Apartment Number</p>";
+        }
+        elseif ($_GET["error"] == "stmtfailed"){
+         echo "<p>something went wrong,  try again</p>";
+        }
+        elseif ($_GET["error"] == "usernametaken"){
+            echo "<p>Username already used</p>";
+        }
+    elseif ($_GET["error"] == "none"){
+        echo "<p>Account successfully created</p>";
+    }      
+   }
+?>
+</section>    
 </body>
 </html>
